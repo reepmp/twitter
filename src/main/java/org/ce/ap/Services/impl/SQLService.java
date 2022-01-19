@@ -1,4 +1,4 @@
-package main.java.org.ce.ap.server;
+package main.java.org.ce.ap.Services.impl;
 import java.sql.*;
 
 public class SQLService {
