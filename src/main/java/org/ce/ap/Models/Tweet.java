@@ -1,6 +1,7 @@
 package main.java.org.ce.ap.Models;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class Tweet {
     private int id;
@@ -8,7 +9,7 @@ public class Tweet {
     private User[] likes;
     private String text;
     private LocalDateTime sentTime;
-    private Tweet[] replies;
+    private ArrayList<Tweet> replies;
     private Tweet repliedTo;
 
     public  Tweet(String username, String text, int repliedTo){
@@ -17,11 +18,12 @@ public class Tweet {
         sentTime = LocalDateTime.now();
         this.sender = new User(username);
         this.repliedTo = new Tweet(repliedTo);
+        replies=new ArrayList<Tweet>();
     }
     public Tweet(int id){
         this.id = id;
     }
-    public Tweet(int id, User sender, User[] likes, String text, LocalDateTime sentTime, Tweet[] replies, Tweet repliedTo) {
+    public Tweet(int id, User sender, User[] likes, String text, LocalDateTime sentTime, ArrayList<Tweet> replies, Tweet repliedTo) {
 
         this.id = id;
         this.sender = sender;
@@ -72,11 +74,11 @@ public class Tweet {
         this.sentTime = sentTime;
     }
 
-    public Tweet[] getReplies() {
+    public ArrayList<Tweet> getReplies() {
         return replies;
     }
 
-    public void setReplies(Tweet[] replies) {
+    public void setReplies(ArrayList<Tweet> replies) {
         this.replies = replies;
     }
 
