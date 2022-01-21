@@ -79,6 +79,24 @@ public class SQLService {
             return null;
         }
     }
+    public boolean Signup(String username,String password) {
+        try {
+            User u2 = getUser(username);
+            if (u2!=null){
+                return false;
+            }
+            java.sql.Timestamp timestamp = java.sql.Timestamp.valueOf(LocalDateTime.now());
+            String s = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(timestamp);
+            String hashed = new AuthenticationServiceImpl().hash_password(password);
+            sql = "INSERT INTO Users (Registerdate,Password,Username)" +
+                    "VALUES ('" + s + "', '" + hashed + "', '" + username + "')";
+            statement = conn.createStatement();
+            int rows = statement.executeUpdate(sql);
+            return rows > 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     public ArrayList<Tweet> createTweetTree(Tweet t) throws SQLException {
         String sql = "SELECT * from Tweets where RepliedTo = '" + t.getId() + "'";
@@ -98,7 +116,14 @@ public class SQLService {
             }
             User sender = new User(res.getString("Sender"));
             Tweet repliedTo = new Tweet(Integer.parseInt(res.getString("RepliedTo")));
-            Tweet t2 = new Tweet(id, sender, null, text, sentTime, null, repliedTo);
+
+            ArrayList<String> likes_usernames = getLikes(id);
+            ArrayList<User> likes = new ArrayList<>();
+            for (String lu: likes_usernames) {
+                likes.add(new User(lu));
+            }
+
+            Tweet t2 = new Tweet(id, sender, likes, text, sentTime, null, repliedTo);
             ArrayList<Tweet> t2Replies = createTweetTree(t2);
             t2.setReplies(t2Replies);
             tweets.add(t2);
@@ -161,5 +186,40 @@ public class SQLService {
             return rows > 0;
         }
         return false;
+    }
+
+    public boolean Like(String username, int tweetId) throws SQLException {
+        User u2 = getUser(username);
+        if (u2 != null){
+            String sql = "SELECT * from Likes where Username = '" + u2.getUsername() + "' AND TweetId ='"+tweetId+"'";
+            Statement statement = conn.createStatement();
+            ResultSet res = statement.executeQuery(sql);
+            if (res.next()) {
+                return false;
+            }
+            sql = "INSERT INTO Likes (Username,TweetId)" +
+                    "VALUES ('" + u2.getUsername() + "', '" + tweetId + "')";
+            statement = conn.createStatement();
+            int rows = statement.executeUpdate(sql);
+            if (rows > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public ArrayList<String> getLikes(int tweetId) throws SQLException {
+
+        String sql = "SELECT * from Likes WHERE TweetId ='"+tweetId+"' ";
+        Statement statement = conn.createStatement();
+        ResultSet res = statement.executeQuery(sql);
+        ArrayList<String > usernames = new ArrayList<String>();
+        while (res.next()) {
+            String username = res.getString("Username");
+            usernames.add(username);
+        }
+        return usernames;
     }
 }

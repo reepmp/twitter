@@ -4,8 +4,10 @@ import main.java.org.ce.ap.Models.GlobalParameters;
 import main.java.org.ce.ap.Models.Tweet;
 import main.java.org.ce.ap.Services.Interface.CommandParserService;
 import main.java.org.ce.ap.Services.Interface.ConnectionService;
+import main.java.org.ce.ap.Services.Interface.ConsoleViewService;
 import main.java.org.ce.ap.Services.impl.CommandParserServiceImpl;
 import main.java.org.ce.ap.Services.impl.ConnectionServiceImpl;
+import main.java.org.ce.ap.Services.impl.ConsoleViewServiceImpl;
 import main.java.org.ce.ap.Services.impl.SQLService;
 
 import java.sql.SQLException;
@@ -19,8 +21,8 @@ public class Main {
         GlobalParameters.sqlService = new SQLService();
         TimeUnit.SECONDS.sleep(2);
         c.setupClient();
-        CommandParserService cps= new CommandParserServiceImpl();
-
+        CommandParserService cps = new CommandParserServiceImpl();
+        GlobalParameters.consoleViewService = new ConsoleViewServiceImpl();
 
 
 

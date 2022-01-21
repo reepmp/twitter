@@ -4,8 +4,10 @@ import main.java.org.ce.ap.Models.GlobalParameters;
 import main.java.org.ce.ap.Models.Tweet;
 import main.java.org.ce.ap.Services.Interface.AuthenticationService;
 import main.java.org.ce.ap.Services.Interface.ConnectionService;
+import main.java.org.ce.ap.Services.Interface.ConsoleViewService;
 import main.java.org.ce.ap.Services.impl.AuthenticationServiceImpl;
 import main.java.org.ce.ap.Services.impl.ConnectionServiceImpl;
+import main.java.org.ce.ap.Services.impl.ConsoleViewServiceImpl;
 import main.java.org.ce.ap.Services.impl.SQLService;
 
 import java.sql.SQLException;
@@ -17,7 +19,6 @@ public class Main {
         System.out.println("Server started!!!");
         GlobalParameters.sqlService = new SQLService();
 
-        // ArrayList<Tweet> t = GlobalParameters.sqlService.createTweetTree(new Tweet(0));
 
         ConnectionService c = new ConnectionServiceImpl();
         GlobalParameters.authenticationService = new AuthenticationServiceImpl();

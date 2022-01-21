@@ -6,24 +6,29 @@ import java.util.ArrayList;
 public class Tweet {
     private int id;
     private User sender;
-    private User[] likes;
+    private ArrayList<User> likes;
     private String text;
     private LocalDateTime sentTime;
     private ArrayList<Tweet> replies;
     private Tweet repliedTo;
 
-    public  Tweet(String username, String text, int repliedTo){
+    public Tweet(String username, String text, int repliedTo) {
         id = 0;
-        this.text=text;
+        this.text = text;
         sentTime = LocalDateTime.now();
         this.sender = new User(username);
         this.repliedTo = new Tweet(repliedTo);
-        replies=new ArrayList<Tweet>();
+        replies = new ArrayList<>();
+        likes = new ArrayList<>();
     }
-    public Tweet(int id){
+
+    public Tweet(int id) {
         this.id = id;
+        replies = new ArrayList<>();
+        likes = new ArrayList<>();
     }
-    public Tweet(int id, User sender, User[] likes, String text, LocalDateTime sentTime, ArrayList<Tweet> replies, Tweet repliedTo) {
+
+    public Tweet(int id, User sender, ArrayList<User> likes, String text, LocalDateTime sentTime, ArrayList<Tweet> replies, Tweet repliedTo) {
 
         this.id = id;
         this.sender = sender;
@@ -50,11 +55,11 @@ public class Tweet {
         this.sender = sender;
     }
 
-    public User[] getLikes() {
+    public ArrayList<User> getLikes() {
         return likes;
     }
 
-    public void setLikes(User[] likes) {
+    public void setLikes(ArrayList<User> likes) {
         this.likes = likes;
     }
 

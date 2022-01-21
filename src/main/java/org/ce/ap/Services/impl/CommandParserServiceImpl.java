@@ -17,6 +17,7 @@ public class CommandParserServiceImpl implements CommandParserService {
                 switch (parts[0]) {
                     case "-help" -> {
                         System.out.println("list of the commands:\n" +
+                                "signup username password\n" +
                                 "login username password\n" +
                                 "tweet \"your_tweet\" [\"tweetId_to_reply\"]\n" +
                                 "timeline\n" +
@@ -36,6 +37,19 @@ public class CommandParserServiceImpl implements CommandParserService {
                         } else {
                             GlobalParameters.currentUser = new User(username);
                             System.out.println("welcome back " + username + "\n for the list of the commands, type -help");
+                        }
+                    }
+                    case "signup" -> {
+                        String username = parts[1];
+                        String password = parts[2];
+                        String[] params = {username, password};
+                        Request req = new Request("signup", "user trying to signup", params);
+                        Response response = c.sendRequest(req);
+                        if (response.getHasError()) {
+                            System.out.println("Signup attempt failed! please try again:\n");
+                        } else {
+                            GlobalParameters.currentUser = new User(username);
+                            System.out.println("welcome " + username + "\n for the list of the commands, type -help");
                         }
                     }
                     case "tweet" -> {
@@ -66,17 +80,15 @@ public class CommandParserServiceImpl implements CommandParserService {
                     }
                     case "show_user_list" -> {
                         ArrayList<User> users = GlobalParameters.sqlService.getAllUsers();
-                        for (User u: users ) {
+                        for (User u : users) {
                             System.out.println(u.getUsername());
                         }
                     }
                     case "timeline" -> {
                         ArrayList<Tweet> tweets = GlobalParameters.sqlService.createTweetTree(new Tweet(0));
-                        for (User u: users ) {
-                            System.out.println(u.getUsername());
-                        }
+                        GlobalParameters.consoleViewService.View_Tweets(tweets, 0);
                     }
-                    case "follow" ->{
+                    case "follow" -> {
                         if (GlobalParameters.currentUser == null) {
                             System.out.println("to preform this action, you need to login first");
                             break;
@@ -84,15 +96,19 @@ public class CommandParserServiceImpl implements CommandParserService {
                         String username = "";
                         try {
                             username = command.split(" ")[1];
-                        } catch (Exception ignored) {}
-                        boolean res = GlobalParameters.sqlService.Follow(GlobalParameters.currentUser,username);
-                        if (res){
-                            System.out.println("you have successfully followed "+username+"!!");
-                        }else {
-                            System.out.println("attempt to follow "+username+" was unsuccessful!");
+                        } catch (Exception ignored) {
                         }
+                        String[] params = {GlobalParameters.currentUser.getUsername(), username};
+                        Request req = new Request("follow", "user trying to follow", params);
+                        Response response = c.sendRequest(req);
+                        if (!response.getHasError()) {
+                            System.out.println("you have successfully followed " + username + "!!");
+                        } else {
+                            System.out.println("attempt to follow " + username + " was unsuccessful!");
+                        }
+
                     }
-                    case "unfollow" ->{
+                    case "unfollow" -> {
                         if (GlobalParameters.currentUser == null) {
                             System.out.println("to preform this action, you need to login first");
                             break;
@@ -100,14 +116,44 @@ public class CommandParserServiceImpl implements CommandParserService {
                         String username = "";
                         try {
                             username = command.split(" ")[1];
-                        } catch (Exception ignored) {}
-                        boolean res = GlobalParameters.sqlService.UnFollow(GlobalParameters.currentUser,username);
-                        if (res){
-                            System.out.println("you have successfully unfollowed "+username+"!!");
-                        }else {
-                            System.out.println("attempt to unfollow "+username+" was unsuccessful!");
+                        } catch (Exception ignored) {
                         }
+                        String[] params = {GlobalParameters.currentUser.getUsername(), username};
+                        Request req = new Request("unfollow", "user trying to follow", params);
+                        Response response = c.sendRequest(req);
+                        if (!response.getHasError()) {
+                            System.out.println("you have successfully unfollowed " + username + "!!");
+                        } else {
+                            System.out.println("attempt to unfollow " + username + " was unsuccessful!");
+                        }
+                        //boolean res = GlobalParameters.sqlService.UnFollow(GlobalParameters.currentUser, username);
+
                     }
+                    case "like" -> {
+                        if (GlobalParameters.currentUser == null) {
+                            System.out.println("to preform this action, you need to login first");
+                            break;
+                        }
+                        int tweetId = 0;
+                        try {
+                            tweetId = Integer.parseInt(command.split(" ")[1]);
+                        } catch (Exception ignored) {
+                            System.out.println("could not read tweet Id. please try again");
+                            break;
+                        }
+
+                        String username = GlobalParameters.currentUser.getUsername();
+                        String[] params = {username, String.valueOf(tweetId)};
+                        Request req = new Request("like", "user trying to like a tweet", params);
+                        Response tweet_response = c.sendRequest(req);
+                        if (tweet_response.getHasError()) {
+                            System.out.println("you were unable to like that tweet. please try again");
+                        } else {
+                            System.out.println("you successfully liked that tweet!!");
+                        }
+
+                    }
+
                     default -> System.out.println("command not found in the command list. type -help for help");
                 }
             } catch (Exception e) {

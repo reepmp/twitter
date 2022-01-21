@@ -21,7 +21,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return Objects.equals(u.getPassword(), hashed);
     }
 
-    private String hash_password(String password) throws NoSuchAlgorithmException {
+    public String hash_password(String password) throws NoSuchAlgorithmException {
         MessageDigest m = MessageDigest.getInstance("MD5");
         m.reset();
         m.update(password.getBytes());
