@@ -13,6 +13,7 @@ import java.sql.SQLException;
 
 
 /**
+ * this class will handle the client requests
  * @author rbmoon
  */
 public class ClientHandler implements Runnable {
