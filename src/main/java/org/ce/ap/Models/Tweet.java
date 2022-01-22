@@ -3,6 +3,10 @@ package main.java.org.ce.ap.Models;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+/**
+ * @author rbmoon
+ * the model for Tweet object
+ */
 public class Tweet {
     private int id;
     private User sender;

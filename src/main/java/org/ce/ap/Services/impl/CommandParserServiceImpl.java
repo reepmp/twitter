@@ -6,7 +6,16 @@ import main.java.org.ce.ap.Models.*;
 import main.java.org.ce.ap.Services.Interface.CommandParserService;
 import main.java.org.ce.ap.Services.Interface.ConnectionService;
 
+/**
+ * the service for parsing the input command
+ * @author rbmoon
+ */
 public class CommandParserServiceImpl implements CommandParserService {
+
+    /**
+     *
+     * @param c uses the connection service to connect to server
+     */
     @Override
     public void Listen(ConnectionService c) {
         while (true) {
@@ -126,7 +135,6 @@ public class CommandParserServiceImpl implements CommandParserService {
                         } else {
                             System.out.println("attempt to unfollow " + username + " was unsuccessful!");
                         }
-                        //boolean res = GlobalParameters.sqlService.UnFollow(GlobalParameters.currentUser, username);
 
                     }
                     case "like" -> {

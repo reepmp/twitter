@@ -11,14 +11,21 @@ import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
+
+/**
+ * @author rbmoon
+ */
 public class ClientHandler implements Runnable {
     private final Socket clientSocket;
 
-    // Constructor
     public ClientHandler(Socket socket) {
         this.clientSocket = socket;
     }
 
+    /**
+     * run method is called when a client is connected to the server
+     * it will respond to the request sent by client
+     */
     public void run() {
         PrintWriter out = null;
         BufferedReader in = null;
@@ -29,7 +36,6 @@ public class ClientHandler implements Runnable {
 
             String line;
             while ((line = in.readLine()) != null) {
-                System.out.println("client:" + line);
                 JSONObject jo = new JSONObject(line);
                 String command = jo.getString("method");
                 switch (command) {
@@ -42,10 +48,10 @@ public class ClientHandler implements Runnable {
                         if (res) {
                             response = new Response(false, 0, 1, true);
                         } else {
-                            response = new Response(true, 98, 0, false);
+                            response = new Response(true, 1, 0, false);
                         }
                         JSONObject jj = new JSONObject(response);
-                        System.out.print(jj + "\n");
+                        GlobalParameters.sqlService.Log(jo+"--"+jj);
                         out.println(jj);
                         out.flush();
                     }
@@ -58,10 +64,10 @@ public class ClientHandler implements Runnable {
                         if (res) {
                             response = new Response(false, 0, 1, true);
                         } else {
-                            response = new Response(true, 228, 0, false);
+                            response = new Response(true, 2, 0, false);
                         }
                         JSONObject jj = new JSONObject(response);
-                        System.out.print(jj + "\n");
+                        GlobalParameters.sqlService.Log(jo+"--"+jj);
                         out.println(jj);
                         out.flush();
                     }
@@ -76,11 +82,11 @@ public class ClientHandler implements Runnable {
                         if (tweet != null) {
                             response = new Response(false, 0, 1, tweet);
                         } else {
-                            response = new Response(true, 98, 0, false);
+                            response = new Response(true, 3, 0, false);
                         }
 
                         JSONObject jj = new JSONObject(response);
-                        System.out.print(jj + "\n");
+                        GlobalParameters.sqlService.Log(jo+"--"+jj);
                         out.println(jj);
                         out.flush();
                     }
@@ -93,11 +99,11 @@ public class ClientHandler implements Runnable {
                         if (res) {
                             response = new Response(false, 0, 1, true);
                         } else {
-                            response = new Response(true, 18, 0, false);
+                            response = new Response(true, 4, 0, false);
                         }
 
                         JSONObject jj = new JSONObject(response);
-                        System.out.print(jj + "\n");
+                        GlobalParameters.sqlService.Log(jo+"--"+jj);
                         out.println(jj);
                         out.flush();
                     }
@@ -110,11 +116,11 @@ public class ClientHandler implements Runnable {
                         if (res) {
                             response = new Response(false, 0, 1, true);
                         } else {
-                            response = new Response(true, 18, 0, false);
+                            response = new Response(true, 5, 0, false);
                         }
 
                         JSONObject jj = new JSONObject(response);
-                        System.out.print(jj + "\n");
+                        GlobalParameters.sqlService.Log(jo+"--"+jj);
                         out.println(jj);
                         out.flush();
                     }
@@ -127,11 +133,11 @@ public class ClientHandler implements Runnable {
                         if (res) {
                             response = new Response(false, 0, 1, true);
                         } else {
-                            response = new Response(true, 18, 0, false);
+                            response = new Response(true, 6, 0, false);
                         }
 
                         JSONObject jj = new JSONObject(response);
-                        System.out.print(jj + "\n");
+                        GlobalParameters.sqlService.Log(jo+"--"+jj);
                         out.println(jj);
                         out.flush();
                     }
@@ -139,7 +145,6 @@ public class ClientHandler implements Runnable {
                     }
                 }
 
-                //out.println("yes, nulled");
             }
         } catch (IOException | SQLException | NoSuchAlgorithmException e) {
             e.printStackTrace();

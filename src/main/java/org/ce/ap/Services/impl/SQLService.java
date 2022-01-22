@@ -2,6 +2,7 @@ package main.java.org.ce.ap.Services.impl;
 
 import main.java.org.ce.ap.Models.Tweet;
 import main.java.org.ce.ap.Models.User;
+import main.java.org.ce.ap.Services.Interface.SQLServiceInterface;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -9,7 +10,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class SQLService {
+
+/**
+ * this service is used for connecting the program to SQL server
+ * and handling data storage and data recovery
+ * @author rbmoon
+ */
+public class SQLService implements SQLServiceInterface {
 
     private Connection conn;
     private String sql;
@@ -32,6 +39,11 @@ public class SQLService {
 
     }
 
+    /**
+     * this method gets a single user from database using username of the user
+     * @param username username of the user
+     * @return the User
+     */
     public User getUser(String username) throws SQLException {
         String sql = "SELECT * from Users where Username = '" + username + "'";
         Statement statement = conn.createStatement();
@@ -53,6 +65,11 @@ public class SQLService {
         }
     }
 
+    /**
+     * this method saves a tweet in database
+     * @param t the tweet to be saved
+     * @return the tweet, with the id parameter included
+     */
     public Tweet newTweet(Tweet t) {
         try {
             String sql = "SELECT MAX(Id) as m from Tweets ";
@@ -79,6 +96,13 @@ public class SQLService {
             return null;
         }
     }
+
+    /**
+     * this method trys to create a new user
+     * @param username username of the user
+     * @param password password of the user
+     * @return whether it was successful
+     */
     public boolean Signup(String username,String password) {
         try {
             User u2 = getUser(username);
@@ -98,6 +122,11 @@ public class SQLService {
         }
     }
 
+    /**
+     * this method creates a tweet tree, relating all tweets and their replies
+     * @param t the root tweet
+     * @return the  Arraylist of replied tweets to the root tweet
+     */
     public ArrayList<Tweet> createTweetTree(Tweet t) throws SQLException {
         String sql = "SELECT * from Tweets where RepliedTo = '" + t.getId() + "'";
         Statement statement = conn.createStatement();
@@ -131,6 +160,10 @@ public class SQLService {
         return tweets;
     }
 
+    /**
+     * this method returns all the users in database
+     * @return all the users in database
+     */
     public ArrayList<User> getAllUsers() throws SQLException {
 
         String sql = "SELECT * from Users ";
@@ -149,6 +182,12 @@ public class SQLService {
         return users;
     }
 
+    /**
+     * this method makes a user follow another user
+     * @param user the requesting user
+     * @param username target user's username
+     * @return whether it was successful
+     */
     public boolean Follow(User user, String username) throws SQLException {
         User u2 = getUser(username);
         if (u2 != null){
@@ -171,6 +210,12 @@ public class SQLService {
         return false;
     }
 
+    /**
+     * this method makes a user unfollow another user
+     * @param user the requesting user
+     * @param username target user's username
+     * @return whether it was successful
+     */
     public boolean UnFollow(User user, String username) throws SQLException {
         User u2 = getUser(username);
         if (u2 != null){
@@ -188,6 +233,12 @@ public class SQLService {
         return false;
     }
 
+    /**
+     * this method makes a user like another user
+     * @param username the requesting user
+     * @param tweetId target tweet
+     * @return whether it was successful
+     */
     public boolean Like(String username, int tweetId) throws SQLException {
         User u2 = getUser(username);
         if (u2 != null){
@@ -210,6 +261,11 @@ public class SQLService {
         return false;
     }
 
+    /**
+     * this method returns the users who liked this tweet
+     * @param tweetId the tweet to be analyzed
+     * @return the list of usernames of users who liked this tweet
+     */
     public ArrayList<String> getLikes(int tweetId) throws SQLException {
 
         String sql = "SELECT * from Likes WHERE TweetId ='"+tweetId+"' ";
@@ -221,5 +277,23 @@ public class SQLService {
             usernames.add(username);
         }
         return usernames;
+    }
+
+    /**
+     * this method logs any action done by the server
+     * @param body the action to be loged
+     */
+    public void Log(String body){
+        try {
+            java.sql.Timestamp timestamp = java.sql.Timestamp.valueOf(LocalDateTime.now());
+            String s = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(timestamp);
+            sql = "INSERT INTO Log (Body,Time)" +
+                    "VALUES ('" + body + "', '" + s + "')";
+            statement = conn.createStatement();
+            int rows = statement.executeUpdate(sql);
+            return;
+        } catch (Exception e) {
+            return;
+        }
     }
 }

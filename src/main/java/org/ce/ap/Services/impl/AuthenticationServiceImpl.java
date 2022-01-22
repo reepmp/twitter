@@ -10,6 +10,10 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Objects;
 
+/**
+ * this service will authenticate the client login using hashed passwords
+ * @author rbmoon
+ */
 public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public boolean Login(String username, String password) throws NoSuchAlgorithmException, SQLException {
@@ -21,6 +25,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return Objects.equals(u.getPassword(), hashed);
     }
 
+    /**
+     * this method uses MD5 algorithm to hash the password
+     * @param password the password to be  hashed
+     * @return returns the hashed password
+     */
     public String hash_password(String password) throws NoSuchAlgorithmException {
         MessageDigest m = MessageDigest.getInstance("MD5");
         m.reset();

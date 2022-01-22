@@ -1,5 +1,9 @@
 package main.java.org.ce.ap.Models;
 
+/**
+ * @author rbmoon
+ * the model for Request object
+ */
 public class Request {
 
     private String method;

@@ -11,19 +11,26 @@ import java.io.*;
 import java.net.*;
 import java.time.LocalDateTime;
 
+/**
+ * service to handle connection between client and server
+ */
 public class ConnectionServiceImpl implements ConnectionService {
     private Socket s;
     private PrintWriter out;
     private BufferedReader in;
 
+    /**
+     *
+     * @param request sends the given request to the server
+     * @return returns the response from server
+     * @throws IOException in case Json deserialization finds an error
+     */
     @Override
     public Response sendRequest(Request request) throws IOException {
         JSONObject jo = new JSONObject(request);
-        System.out.print(jo + "\n");
         out.println(jo);
         out.flush();
         String resp = in.readLine();
-        System.out.println("Server replied " + resp);
         JSONObject j2 = new JSONObject(resp);
         return new Response(
                 j2.getBoolean("hasError"), j2.getInt("errorCode"),
@@ -35,6 +42,9 @@ public class ConnectionServiceImpl implements ConnectionService {
 
     }
 
+    /**
+     * this method will initiate the server side of connection
+     */
     @Override
     public void setupServer() {
 
@@ -62,21 +72,16 @@ public class ConnectionServiceImpl implements ConnectionService {
         }
     }
 
+
+    /**
+     * this method will initiate client side of connection
+     */
     @Override
     public void setupClient() {
         try {
             s = new Socket("localhost", 1234);
             out = new PrintWriter(s.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(s.getInputStream()));
- /*
-            String line = "nulling";
-            User u = new User(1,"a","b","asd","", LocalDateTime.now(),LocalDateTime.now());
-            JSONObject jo = new JSONObject(u);
-            System.out.print(jo+"\n");
-            out.println(jo);
-            out.flush();
-            System.out.println("Server replied "+ in.readLine());
-            */
         } catch (IOException e) {
             e.printStackTrace();
         }

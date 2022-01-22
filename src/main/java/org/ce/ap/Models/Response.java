@@ -1,5 +1,9 @@
 package main.java.org.ce.ap.Models;
 
+/**
+ * @author rbmoon
+ * the model for Response object
+ */
 public class Response {
     private boolean hasError;
     private int errorCode;
